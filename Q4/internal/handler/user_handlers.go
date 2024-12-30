@@ -27,15 +27,15 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func writeErrorResponse(w http.ResponseWriter, status int, message string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	err := json.NewEncoder(w).Encode(ErrorResponse{Message: message})
-	if err != nil {
-		return
-	}
-}
-
+// GetAllUsers godoc
+// @Summary Get all users
+// @Description Get a list of all users
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.User
+// @Failure 500 {object} ErrorResponse
+// @Router /users [get]
 func (uh *UserHandler) GetAllUsers(rw http.ResponseWriter, r *http.Request) {
 	users, err := uh.Service.GetAllUsers()
 	if err != nil {
@@ -53,6 +53,18 @@ func (uh *UserHandler) GetAllUsers(rw http.ResponseWriter, r *http.Request) {
 	logrus.Info("Users retrieved successfully")
 }
 
+// GetUserByID godoc
+// @Summary Get a user by ID
+// @Description Get a user by their ID
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User ID"
+// @Success 200 {object} model.User
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /users/{id} [get]
 func (uh *UserHandler) GetUserByID(rw http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	idStr, ok := params["id"]
@@ -86,6 +98,17 @@ func (uh *UserHandler) GetUserByID(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// CreateUser godoc
+// @Summary Create a new user
+// @Description Create a new user with the provided data
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param user body model.User true "User data"
+// @Success 201 {object} map[string]string
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /users [post]
 func (uh *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	var user model.User
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -114,6 +137,19 @@ func (uh *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	logrus.Info("User created successfully")
 }
 
+// UpdateUser godoc
+// @Summary Update a user
+// @Description Update an existing user with the provided data
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User ID"
+// @Param user body model.User true "User data"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /users/{id} [put]
 func (uh *UserHandler) UpdateUser(rw http.ResponseWriter, r *http.Request) {
 	id, err := getUserIDFromURL(r)
 	if err != nil {
@@ -147,6 +183,18 @@ func (uh *UserHandler) UpdateUser(rw http.ResponseWriter, r *http.Request) {
 	logrus.Infof("User with ID %d updated successfully", user.ID)
 }
 
+// DeleteUser godoc
+// @Summary Delete a user
+// @Description Delete a user by their ID
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /users/{id} [delete]
 func (uh *UserHandler) DeleteUser(rw http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	idStr, ok := params["id"]
