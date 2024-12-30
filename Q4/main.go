@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "Q4/docs"
 	"Q4/internal/database"
 	"Q4/internal/middleware"
 	"Q4/internal/routes"
@@ -11,6 +12,7 @@ import (
 )
 
 func main() {
+
 	logrus.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,
 	})
